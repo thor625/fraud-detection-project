@@ -16,20 +16,23 @@ Built using the [Kaggle Credit Card Fraud Detection dataset](https://www.kaggle.
 
 ## Project Structure
 
+```
 fraud-detection-project/
-├── data/
-│   ├── raw/                  ← pulled from S3
-│   └── processed/            ← cleaned and SMOTE'd
 ├── notebooks/
-│   ├── 01_eda.ipynb          ← exploratory data analysis
-│   ├── 02_preprocessing.ipynb
-│   └── 03_training.ipynb
+│   ├── 01_eda.ipynb              ← exploratory data analysis
+│   ├── 02_preprocessing.ipynb    ← scaling, SMOTE, train/test split
+│   └── 03_training.ipynb         ← model training and evaluation
 ├── src/
 │   ├── lib/
-│   │   └── connectors.py     ← shared AWS utilities
-│   └── api/                  ← FastAPI app
-├── tests/
-└── README.md
+│   │   └── connectors.py         ← shared AWS utilities (S3, DynamoDB)
+│   └── api/
+│       ├── main.py               ← FastAPI routes
+│       └── model.py              ← prediction logic
+├── .gitignore
+├── README.md
+├── requirements.txt
+└── setup.py
+```
 
 ## Exploratory Data Analysis
 
