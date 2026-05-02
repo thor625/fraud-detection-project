@@ -191,7 +191,16 @@ class Connectors:
     @staticmethod
     def save_prediction(dynamodb, result, table_name="fraud-predictions"):
         try:
+            # Convert floats to Decimal (DynamoDB requirement)
+            from decimal import Decimal
+            item = {
+                k: Decimal(str(v)) if isinstance(v, float) else v
+                for k, v in result.items()
+            }
             table = dynamodb.Table(table_name)
-            table.put_item(Item=result)
+            response = table.put_item(Item=item)
+            print(f"✓ Saved to DynamoDB: {result['transaction_id']}")
+            return response
         except Exception as e:
-            print(f"DynamoDB write failed: {e}")
+            print(f"✗ DynamoDB write failed: {e}")
+            raise e
