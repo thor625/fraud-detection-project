@@ -167,3 +167,31 @@ class Connectors:
         obj = pickle.loads(buffer.read())
         print(f"Loaded: {key}")
         return obj
+    
+    @staticmethod
+    def load_model(s3_client, bucket=os.getenv('S3_BUCKET')):
+        print("Loading model from S3...")
+        obj = s3_client.get_object(
+            Bucket=bucket,
+            Key='model-artifacts/xgboost_model.pkl'
+        )
+        model = pickle.loads(obj['Body'].read())
+        print("✓ Model loaded")
+        return model
+
+    @staticmethod
+    def get_dynamodb():
+        return boto3.resource(
+            'dynamodb',
+            aws_access_key_id=os.getenv('AWS_ACCESS_KEY_ID'),
+            aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY'),
+            region_name=os.getenv('AWS_DEFAULT_REGION')
+        )
+
+    @staticmethod
+    def save_prediction(dynamodb, result, table_name="fraud-predictions"):
+        try:
+            table = dynamodb.Table(table_name)
+            table.put_item(Item=result)
+        except Exception as e:
+            print(f"DynamoDB write failed: {e}")
